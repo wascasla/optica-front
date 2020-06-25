@@ -36,6 +36,9 @@ import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
 import Pacientes from "views/Pacientes/Pacientes";
+import NuevoPaciente from "views/Pacientes/NuevoPaciente";
+import DetallePaciente from "views/Pacientes/DetallePaciente";
+import EditarPaciente from "views/Pacientes/EditarPaciente";
 
 const dashboardRoutes = [
   {
@@ -44,7 +47,8 @@ const dashboardRoutes = [
     rtlName: "لوحة القيادة",
     icon: Dashboard,
     component: DashboardPage,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: true
   },
   {
     path: "/user",
@@ -52,7 +56,8 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: Person,
     component: UserProfile,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: false
   },
   {
     path: "/table",
@@ -60,7 +65,8 @@ const dashboardRoutes = [
     rtlName: "قائمة الجدول",
     icon: "content_paste",
     component: TableList,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: true
   },
   {
     path: "/typography",
@@ -68,7 +74,8 @@ const dashboardRoutes = [
     rtlName: "طباعة",
     icon: LibraryBooks,
     component: Typography,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: true
   },
   {
     path: "/icons",
@@ -76,7 +83,8 @@ const dashboardRoutes = [
     rtlName: "الرموز",
     icon: BubbleChart,
     component: Icons,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: false
   },
   {
     path: "/maps",
@@ -84,7 +92,8 @@ const dashboardRoutes = [
     rtlName: "خرائط",
     icon: LocationOn,
     component: Maps,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: true
   },
   {
     path: "/notifications",
@@ -92,7 +101,8 @@ const dashboardRoutes = [
     rtlName: "إخطارات",
     icon: Notifications,
     component: NotificationsPage,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: true
   },
   {
     path: "/rtl-page",
@@ -100,7 +110,8 @@ const dashboardRoutes = [
     rtlName: "پشتیبانی از راست به چپ",
     icon: Language,
     component: RTLPage,
-    layout: "/rtl"
+    layout: "/rtl",
+    invisible: true
   },
   {
     path: "/upgrade-to-pro",
@@ -108,15 +119,44 @@ const dashboardRoutes = [
     rtlName: "التطور للاحترافية",
     icon: Unarchive,
     component: UpgradeToPro,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: true
   },
   {
     path: "/pacientes",
     name: "Pacientes",
     rtlName: "لوحة القيادة",
-    icon: Dashboard,
+    icon: LibraryBooks,
     component: Pacientes,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: false
+  },
+  {
+    path: "/paciente/nuevo",
+    name: "Agregar Paciente",
+    rtlName: "لوحة القيادة",
+    icon: Dashboard,
+    component: NuevoPaciente,
+    layout: "/admin",
+    invisible: false
+  },
+  {
+    path: "/paciente/detalle",
+    name: "Detalle Paciente",
+    rtlName: "لوحة القيادة",
+    icon: Dashboard,
+    component: DetallePaciente,
+    layout: "/admin",
+    invisible: false
+  },
+  {
+    path: "/paciente/editar/:id",
+    name: "Editar Paciente",
+    rtlName: "لوحة القيادة",
+    icon: Dashboard,
+    component: EditarPaciente,
+    layout: "/admin",
+    invisible: true
   },
 ];
 

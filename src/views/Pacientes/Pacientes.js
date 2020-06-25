@@ -51,6 +51,7 @@ import TextField from '@material-ui/core/TextField';
 
 import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js';
 import clienteAxios from '../../config/axios';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(styles);
 
@@ -67,8 +68,8 @@ export default function Pacientes() {
 
 
   const leerDatosBusqueda = (e) => {
-    setBusqueda({ [e.target.name]: e.target.value });
-    //console.log(busqueda);
+    setBusqueda({ ...busqueda, [e.target.name]: e.target.value });
+    console.log(busqueda);
   };
 
   const buscarPaciente = async (e) => {
@@ -138,7 +139,7 @@ export default function Pacientes() {
         <GridItem xs={12} sm={12} md={10}>
           <Button variant="contained" color="primary">
             Agregar Nuevo Paciente
-</Button>
+          </Button>
           <form onSubmit={buscarPaciente}>
             <Card>
               <CardHeader color='primary'>
@@ -227,7 +228,15 @@ export default function Pacientes() {
                         </TableCell>
                         <TableCell align="right">{paciente.nombre}</TableCell>
                         <TableCell align="right">{paciente.apellido}</TableCell>
-                        <TableCell align="right">Acciones</TableCell>
+                        <TableCell align="right">
+                          <Button component={Link} to={'/admin/paciente/detalle'} color="primary">
+                            Detalle
+                          </Button>
+                          <Button component={Link} to={`/admin/paciente/editar/${paciente._id}`} color="primary">
+                            Editar
+                          </Button>
+
+                        </TableCell>
 
                       </TableRow>
                     ))}
@@ -241,3 +250,5 @@ export default function Pacientes() {
     </div>
   );
 }
+
+
