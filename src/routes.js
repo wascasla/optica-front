@@ -150,7 +150,7 @@ const dashboardRoutes = [
     invisible: false
   },
   {
-    path: "/paciente/editar/:id",
+    path: "/paciente/editar/:idPersona",
     name: "Editar Paciente",
     rtlName: "لوحة القيادة",
     icon: Dashboard,

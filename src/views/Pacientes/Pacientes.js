@@ -137,7 +137,7 @@ export default function Pacientes() {
 
       <GridContainer>
         <GridItem xs={12} sm={12} md={10}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" component={Link} to={'/admin/paciente/nuevo'} color="primary">
             Agregar Nuevo Paciente
           </Button>
           <form onSubmit={buscarPaciente}>
