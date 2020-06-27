@@ -206,7 +206,7 @@ export default function Pacientes() {
               <CardHeader color='primary'>
                 <h4 className={classes.cardTitleWhite}>Pacientes</h4>
                 <p className={classes.cardCategoryWhite}>
-                  Here is a subtitle for this table
+                  Lista
               </p>
               </CardHeader>
               <CardBody>
@@ -229,11 +229,9 @@ export default function Pacientes() {
                         <TableCell align="right">{paciente.nombre}</TableCell>
                         <TableCell align="right">{paciente.apellido}</TableCell>
                         <TableCell align="right">
-                          <Button component={Link} to={'/admin/paciente/detalle'} color="primary">
-                            Detalle
-                          </Button>
+
                           <Button component={Link} to={`/admin/paciente/editar/${paciente._id}`} color="primary">
-                            Editar
+                            Detalle
                           </Button>
 
                         </TableCell>

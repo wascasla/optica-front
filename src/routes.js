@@ -57,7 +57,7 @@ const dashboardRoutes = [
     icon: Person,
     component: UserProfile,
     layout: "/admin",
-    invisible: false
+    invisible: true
   },
   {
     path: "/table",
@@ -84,7 +84,7 @@ const dashboardRoutes = [
     icon: BubbleChart,
     component: Icons,
     layout: "/admin",
-    invisible: false
+    invisible: true
   },
   {
     path: "/maps",
@@ -147,7 +147,7 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: DetallePaciente,
     layout: "/admin",
-    invisible: false
+    invisible: true
   },
   {
     path: "/paciente/editar/:idPersona",

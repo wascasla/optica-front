@@ -78,7 +78,9 @@ const EditarPaciente = (props) => {
     });
 
     const [localidades, setlocalidades] = useState([])
-    const [value, setValue] = useState()
+    const [value, setValue] = useState("")
+    const [habilitado, setHabilitado] = useState(false)
+    const [edad, setEdad] = useState(0)
 
     // consultar la api para traer el prodcuto a editar
 
@@ -92,24 +94,29 @@ const EditarPaciente = (props) => {
             console.log(resultado.data);
             setlocalidades(resultado.data)
             console.log("object")
+
+
+
         }
 
         const consultarAPI = async () => {
-            //console.log("hola")
-            //console.log(idPaciente)
+
             const pacienteConsulta = await clienteAxios.get(`/pacientes/busqueda/Persona/${idPersona}`);
-            console.log(pacienteConsulta.data)
+
             const datos = pacienteConsulta.data
             setPersona(pacienteConsulta.data.persona);
             setPaciente(pacienteConsulta.data)
+            if (pacienteConsulta.data.persona.localidad) {
+                setValue(pacienteConsulta.data.persona.localidad.nombre + " - " + pacienteConsulta.data.persona.localidad.provincia.nombre)
+            }
+            getEdad(pacienteConsulta.data.persona.fechaNacimiento)
+            console.log(pacienteConsulta.data.persona.fechaNacimiento)
 
         };
 
-
-
         getLocalidades();
-
         consultarAPI();
+
     }, []);
 
     const actualizarPaciente = async (e) => {
@@ -122,7 +129,7 @@ const EditarPaciente = (props) => {
         //revisar que las propiedades del state tengan contenido
         if (nombre.length > 0 || apellido.length > 0 || dni.length > 0) {
 
-            setPaciente({ ...paciente, persona: persona });
+            setPaciente({ ...paciente, persona });
             // almacenarlo en la BD
             try {
 
@@ -144,9 +151,16 @@ const EditarPaciente = (props) => {
                                 text: " Ya existe un paciente con esos valores  " + res.data.errmsg,
                             });
                         } else {
+                            ///persona/:idPersona
+                            const res = await clienteAxios.put(`/persona/${persona._id}`, persona);
+
+                            if (res.data.code === 1) {
+                                Swal.fire('Actualizado Correctamente', res.data.mensaje, 'success');
+                                console.log(res.data);
+                            }
+
                             //limpiarStatePaciente()
-                            Swal.fire('Actualizado Correctamente', res.data.mensaje, 'success');
-                            console.log(res.data);
+
                             //redireccionar
                             //history.push('/productos');
 
@@ -184,6 +198,9 @@ const EditarPaciente = (props) => {
     const leerDatosBusquedaPersona = (e) => {
         //setPaciente(...paciente);
         setPersona({ ...persona, [e.target.name]: e.target.value });
+        if (e.target.name === "fechaNacimiento") {
+            getEdad(e.target.value)
+        }
         //console.log(paciente);
     };
 
@@ -200,6 +217,23 @@ const EditarPaciente = (props) => {
             persona.localidad = ""
         }
 
+    }
+
+    const ver = (e) => {
+        //setPaciente(...paciente);
+        //setPaciente({ ...paciente, [e.target.name]: e.target.value });
+        //console.log(paciente);
+        e.preventDefault()
+        var item = localidades.find(item => item._id === paciente.persona.localidad);
+        //console.log(item)
+        //console.log(localidades)
+        setValue(item.nombre)
+        //console.log(value)
+    };
+
+    const getEdad = (fechaNacimiento) => {
+        var years = new Date(new Date() - new Date(fechaNacimiento)).getFullYear() - 1970;
+        setEdad(years)
     }
 
     return (
@@ -223,7 +257,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "dni",
                                                 type: "number",
                                                 onChange: (leerDatosBusquedaPersona),
@@ -240,7 +274,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "nombre",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPersona),
@@ -256,7 +290,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "apellido",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPersona),
@@ -266,7 +300,7 @@ const EditarPaciente = (props) => {
                                     </GridItem>
                                 </GridContainer>
                                 <GridContainer>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                    <GridItem xs={12} sm={12} md={2}>
                                         <CustomInput
                                             labelText="Fecha Nacimiento"
                                             id="fechaNacimiento"
@@ -274,7 +308,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "fechaNacimiento",
                                                 type: "date",
                                                 required: true,
@@ -286,7 +320,21 @@ const EditarPaciente = (props) => {
                                             }} />
 
                                     </GridItem>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                    <GridItem xs={12} sm={12} md={1}>
+                                        <CustomInput
+                                            labelText="Edad"
+                                            id="edad"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                disabled: true,
+                                                name: "edad",
+                                                type: "text",
+                                                value: edad
+                                            }} />
+                                    </GridItem>
+                                    <GridItem xs={12} sm={12} md={2}>
                                         <CustomInput
                                             labelText="CUIL"
                                             id="cuil"
@@ -294,14 +342,14 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "cuil",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPersona),
                                                 value: persona.cuil
                                             }} />
                                     </GridItem>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                    <GridItem xs={12} sm={12} md={2}>
                                         <CustomInput
                                             labelText="E-mail"
                                             id="email"
@@ -309,14 +357,14 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "email",
                                                 type: "email",
                                                 onChange: (leerDatosBusquedaPersona),
                                                 value: persona.email
                                             }} />
                                     </GridItem>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                    <GridItem xs={12} sm={12} md={2}>
                                         <CustomInput
                                             labelText="Telefono"
                                             id="telefono"
@@ -324,7 +372,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "telefono",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPersona),
@@ -340,17 +388,32 @@ const EditarPaciente = (props) => {
                                         <Autocomplete
                                             id="combo-box-demo"
                                             options={localidades}
-                                            getOptionLabel={(option) => option.nombre + " - " + option.provincia.nombre}
 
+                                            getOptionLabel={(option) => option.nombre + " - " + option.provincia.nombre}
                                             style={{ width: 300 }}
                                             onChange={(event, value) => guadarLocalidad(value)}
-                                            renderInput={(params) => <TextField {...params} label="Localidad"
+                                            renderInput={(params) => <TextField {...params} label="Editar Localidad"
                                                 name="localidad"
                                                 type="text"
-
-
+                                                disabled={!habilitado}
                                             />}
                                         />
+                                    </GridItem>
+                                </GridContainer>
+                                <GridContainer>
+                                    <GridItem xs={12} sm={12} md={6}>
+                                        <CustomInput
+                                            labelText="Localidad"
+                                            id="localidadEle"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                disabled: true,
+                                                name: "localidadEle",
+                                                type: "text",
+                                                value: value
+                                            }} />
                                     </GridItem>
                                 </GridContainer>
                                 <GridContainer>
@@ -362,7 +425,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "direccion",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPersona),
@@ -378,7 +441,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "fichero",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPaciente),
@@ -397,7 +460,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "fechaUltimaConsulta",
                                                 type: "date",
                                                 onChange: (leerDatosBusquedaPaciente),
@@ -415,7 +478,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "medicoUltimaConsulta",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPaciente),
@@ -430,7 +493,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "observacion",
                                                 type: "text",
                                                 multiline: true,
@@ -440,78 +503,87 @@ const EditarPaciente = (props) => {
                                             }} />
                                     </GridItem>
                                 </GridContainer>
-                                <GridContainer>
-                                    <GridItem xs={12} sm={12} md={3}>
 
-                                        <CustomInput
-                                            labelText="Tutor"
-                                            id="nombreTutor"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "nombreTutor",
-                                                type: "text",
-                                                onChange: (leerDatosBusquedaPaciente),
-                                                required: false,
-                                                value: paciente.nombreTutor
-                                            }} />
-                                    </GridItem>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                {/* mostrar si es menor a 18 años */}
+                                {(edad < 18 && edad !== 0) ?
+                                    <GridContainer>
+                                        <GridItem xs={12} sm={12} md={3}>
 
-                                        <CustomInput
-                                            labelText="Telefono Tutor"
-                                            id="telefonoTutor"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "telefonoTutor",
-                                                type: "text",
-                                                onChange: (leerDatosBusquedaPaciente),
-                                                required: false,
-                                                value: paciente.telefonoTutor
-                                            }} />
-                                    </GridItem>
-                                </GridContainer>
-                                <GridContainer>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                            <CustomInput
+                                                labelText="Tutor"
+                                                id="nombreTutor"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: !habilitado,
+                                                    name: "nombreTutor",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusquedaPaciente),
+                                                    required: false,
+                                                    value: paciente.nombreTutor
+                                                }} />
+                                        </GridItem>
+                                        <GridItem xs={12} sm={12} md={3}>
 
-                                        <CustomInput
-                                            labelText="Acompañante"
-                                            id="nombreAcompanante"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "nombreAcompanante",
-                                                type: "text",
-                                                onChange: (leerDatosBusquedaPaciente),
-                                                required: false,
-                                                value: paciente.nombreAcompanante
-                                            }} />
-                                    </GridItem>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                            <CustomInput
+                                                labelText="Telefono Tutor"
+                                                id="telefonoTutor"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: !habilitado,
+                                                    name: "telefonoTutor",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusquedaPaciente),
+                                                    required: false,
+                                                    value: paciente.telefonoTutor
+                                                }} />
+                                        </GridItem>
+                                    </GridContainer>
+                                    : null}
 
-                                        <CustomInput
-                                            labelText="Telefono Acompañante"
-                                            id="telefonoAcompanante"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "telefonoAcompanante",
-                                                type: "text",
-                                                onChange: (leerDatosBusquedaPaciente),
-                                                required: false,
-                                                value: paciente.telefonoAcompanante
-                                            }} />
-                                    </GridItem>
-                                </GridContainer>
+                                {/* mostrar si es mayor a 65 años */}
+                                {(edad > 65 && edad !== 0) ?
+                                    <GridContainer>
+                                        <GridItem xs={12} sm={12} md={3}>
+
+                                            <CustomInput
+                                                labelText="Acompañante"
+                                                id="nombreAcompanante"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: !habilitado,
+                                                    name: "nombreAcompanante",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusquedaPaciente),
+                                                    required: false,
+                                                    value: paciente.nombreAcompanante
+                                                }} />
+                                        </GridItem>
+                                        <GridItem xs={12} sm={12} md={3}>
+
+                                            <CustomInput
+                                                labelText="Telefono Acompañante"
+                                                id="telefonoAcompanante"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: !habilitado,
+                                                    name: "telefonoAcompanante",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusquedaPaciente),
+                                                    required: false,
+                                                    value: paciente.telefonoAcompanante
+                                                }} />
+                                        </GridItem>
+                                    </GridContainer>
+                                    : null}
+
                                 <GridContainer>
                                     <GridItem xs={12} sm={12} md={4}>
 
@@ -522,7 +594,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "obraSocial",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPaciente),
@@ -539,7 +611,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "planObraSocial",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPaciente),
@@ -556,7 +628,7 @@ const EditarPaciente = (props) => {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: false,
+                                                disabled: !habilitado,
                                                 name: "numeroAfiliado",
                                                 type: "text",
                                                 onChange: (leerDatosBusquedaPaciente),
@@ -567,7 +639,10 @@ const EditarPaciente = (props) => {
                                 </GridContainer>
                             </CardBody>
                             <CardFooter>
-                                {<Button color="primary" type="submit" >Guardar</Button>}
+                                <Button color="primary" onClick={() => setHabilitado(true)} type="button" >Editar</Button>
+                                <Button color="primary" disabled={!habilitado} type="submit" >Guardar</Button>
+
+                                <Button color="primary" onClick={() => setHabilitado(false)} type="button" >Cancelar</Button>
 
                             </CardFooter>
                         </form>

@@ -71,6 +71,8 @@ const NuevoPaciente = () => {
 
     const [localidades, setlocalidades] = useState([])
 
+    const [edad, setEdad] = useState(0)
+
     useEffect(() => {
 
         const getLocalidades = async () => {
@@ -86,15 +88,15 @@ const NuevoPaciente = () => {
     const leerDatosBusqueda = (e) => {
         //setPaciente(...paciente);
         setPaciente({ ...paciente, [e.target.name]: e.target.value });
-        console.log(paciente);
+        if (e.target.name === "fechaNacimiento") {
+            getEdad(e.target.value)
+        }
     };
 
     const classes = useStyles();
 
     const ver = (e) => {
         e.preventDefault();
-
-        console.log(paciente);
     }
 
     // agregar nuevo paciente a la BD
@@ -102,7 +104,7 @@ const NuevoPaciente = () => {
         e.preventDefault();
         //Destructuring
         const { dni, nombre, apellido, localidad } = paciente;
-        console.log(paciente)
+
 
 
         //revisar que las propiedades del state tengan contenido
@@ -200,6 +202,11 @@ const NuevoPaciente = () => {
         });
     }
 
+    const getEdad = (fechaNacimiento) => {
+        var years = new Date(new Date() - new Date(fechaNacimiento)).getFullYear() - 1970;
+        setEdad(years)
+    }
+
     return (
         <div>
             <GridContainer>
@@ -264,7 +271,7 @@ const NuevoPaciente = () => {
                                     </GridItem>
                                 </GridContainer>
                                 <GridContainer>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                    <GridItem xs={12} sm={12} md={2}>
                                         <CustomInput
                                             labelText="Fecha Nacimiento"
                                             id="fechaNacimiento"
@@ -281,6 +288,20 @@ const NuevoPaciente = () => {
                                             }}
                                             labelProps={{
                                                 shrink: true,
+                                            }} />
+                                    </GridItem>
+                                    <GridItem xs={12} sm={12} md={1}>
+                                        <CustomInput
+                                            labelText="Edad"
+                                            id="edad"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                disabled: true,
+                                                name: "edad",
+                                                type: "text",
+                                                value: edad
                                             }} />
                                     </GridItem>
                                     <GridItem xs={12} sm={12} md={3}>
@@ -435,78 +456,87 @@ const NuevoPaciente = () => {
                                             }} />
                                     </GridItem>
                                 </GridContainer>
-                                <GridContainer>
-                                    <GridItem xs={12} sm={12} md={3}>
 
-                                        <CustomInput
-                                            labelText="Tutor"
-                                            id="nombreTutor"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "nombreTutor",
-                                                type: "text",
-                                                onChange: (leerDatosBusqueda),
-                                                required: false,
-                                                value: paciente.nombreTutor
-                                            }} />
-                                    </GridItem>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                {/* mostrar si es menor a 18 años */}
+                                {(edad < 18 && edad !== 0) ?
+                                    <GridContainer>
+                                        <GridItem xs={12} sm={12} md={3}>
 
-                                        <CustomInput
-                                            labelText="Telefono Tutor"
-                                            id="telefonoTutor"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "telefonoTutor",
-                                                type: "text",
-                                                onChange: (leerDatosBusqueda),
-                                                required: false,
-                                                value: paciente.telefonoTutor
-                                            }} />
-                                    </GridItem>
-                                </GridContainer>
-                                <GridContainer>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                            <CustomInput
+                                                labelText="Tutor"
+                                                id="nombreTutor"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: false,
+                                                    name: "nombreTutor",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusqueda),
+                                                    required: false,
+                                                    value: paciente.nombreTutor
+                                                }} />
+                                        </GridItem>
+                                        <GridItem xs={12} sm={12} md={3}>
 
-                                        <CustomInput
-                                            labelText="Acompañante"
-                                            id="nombreAcompanante"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "nombreAcompanante",
-                                                type: "text",
-                                                onChange: (leerDatosBusqueda),
-                                                required: false,
-                                                value: paciente.nombreAcompanante
-                                            }} />
-                                    </GridItem>
-                                    <GridItem xs={12} sm={12} md={3}>
+                                            <CustomInput
+                                                labelText="Telefono Tutor"
+                                                id="telefonoTutor"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: false,
+                                                    name: "telefonoTutor",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusqueda),
+                                                    required: false,
+                                                    value: paciente.telefonoTutor
+                                                }} />
+                                        </GridItem>
+                                    </GridContainer>
+                                    : null}
 
-                                        <CustomInput
-                                            labelText="Telefono Acompañante"
-                                            id="telefonoAcompanante"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                disabled: false,
-                                                name: "telefonoAcompanante",
-                                                type: "text",
-                                                onChange: (leerDatosBusqueda),
-                                                required: false,
-                                                value: paciente.telefonoAcompanante
-                                            }} />
-                                    </GridItem>
-                                </GridContainer>
+                                {/* mostrar si es mayor a 65 años */}
+                                {(edad > 65 && edad !== 0) ?
+                                    <GridContainer>
+                                        <GridItem xs={12} sm={12} md={3}>
+
+                                            <CustomInput
+                                                labelText="Acompañante"
+                                                id="nombreAcompanante"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: false,
+                                                    name: "nombreAcompanante",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusqueda),
+                                                    required: false,
+                                                    value: paciente.nombreAcompanante
+                                                }} />
+                                        </GridItem>
+                                        <GridItem xs={12} sm={12} md={3}>
+
+                                            <CustomInput
+                                                labelText="Telefono Acompañante"
+                                                id="telefonoAcompanante"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    disabled: false,
+                                                    name: "telefonoAcompanante",
+                                                    type: "text",
+                                                    onChange: (leerDatosBusqueda),
+                                                    required: false,
+                                                    value: paciente.telefonoAcompanante
+                                                }} />
+                                        </GridItem>
+                                    </GridContainer>
+                                    : null}
+
                                 <GridContainer>
                                     <GridItem xs={12} sm={12} md={4}>
 
@@ -563,6 +593,7 @@ const NuevoPaciente = () => {
                             </CardBody>
                             <CardFooter>
                                 {<Button color="primary" type="submit" >Guardar</Button>}
+                                <Button color="primary" onClick={() => limpiarStatePaciente()} type="button" >Cancelar</Button>
 
                             </CardFooter>
                         </form>
