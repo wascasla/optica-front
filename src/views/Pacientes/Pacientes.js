@@ -52,6 +52,7 @@ import TextField from '@material-ui/core/TextField';
 import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js';
 import clienteAxios from '../../config/axios';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const useStyles = makeStyles(styles);
 
@@ -69,7 +70,6 @@ export default function Pacientes() {
 
   const leerDatosBusqueda = (e) => {
     setBusqueda({ ...busqueda, [e.target.name]: e.target.value });
-    console.log(busqueda);
   };
 
   const buscarPaciente = async (e) => {
@@ -81,12 +81,17 @@ export default function Pacientes() {
       var pacientensEncontrados = [];
       const resultadoBusqueda = await clienteAxios.post(`/personas/busqueda/dni`, busqueda);
       console.log(resultadoBusqueda.data);
-      if (resultadoBusqueda.data) {
+      if (!resultadoBusqueda.data.mensaje) {
         pacientensEncontrados.push(resultadoBusqueda.data)
         console.log(pacientensEncontrados);
         setPacientes(pacientensEncontrados);
       } else {
         console.log("No existen pacientes con ese dni")
+        Swal.fire({
+          icon: 'error',
+          title: 'Hubo un error al buscar',
+          text: " No existen pacientes con ese dni  ",
+        });
       }
 
     } else {
@@ -94,14 +99,24 @@ export default function Pacientes() {
         const resultadoBusqueda = await clienteAxios.post(`/personas/busqueda/nombre`, busqueda);
         console.log(resultadoBusqueda.data);
         //pacientensEncontrados.push(resultadoBusqueda.data)
-        if (resultadoBusqueda.data) {
+        if (!resultadoBusqueda.data.mensaje) {
           setPacientes(resultadoBusqueda.data);
         } else {
           console.log("No existen pacientes con ese nombre y/o apellido")
+          Swal.fire({
+            icon: 'error',
+            title: 'Hubo un error al buscar',
+            text: " No existen pacientes con ese nombre y/o apellido  ",
+          });
         }
 
       } else {
-        console.log("debe agregar un parametro de busqueda");
+        //console.log("debe agregar un parametro de busqueda");
+        Swal.fire({
+          icon: 'info',
+          title: 'Faltan Datos',
+          text: " Debe ingresar algun parametro de busqueda  ",
+        });
       }
 
     }
@@ -130,19 +145,29 @@ export default function Pacientes() {
       });
   }*/
 
+
   };
+
+  const limpiarCampos = () => {
+    setPacientes([]);
+    setBusqueda({
+      dni: '',
+      nombre: '',
+      apellido: ''
+    })
+  }
 
   return (
     <div>
 
       <GridContainer>
         <GridItem xs={12} sm={12} md={10}>
-          <Button variant="contained" component={Link} to={'/admin/paciente/nuevo'} color="primary">
+          <Button variant="contained" component={Link} to={'/admin/paciente/nuevo'} color="info">
             Agregar Nuevo Paciente
           </Button>
           <form onSubmit={buscarPaciente}>
             <Card>
-              <CardHeader color='primary'>
+              <CardHeader color='success'>
                 <h4 className={classes.cardTitleWhite}>Buscar Paciente</h4>
                 <p className={classes.cardCategoryWhite}>
                   Ingrese algnos de los siguientes campos:
@@ -155,6 +180,7 @@ export default function Pacientes() {
                       id="outlined-number"
                       label="Dni"
                       type="number"
+                      value={busqueda.dni}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -170,6 +196,7 @@ export default function Pacientes() {
                       id="outlined-number"
                       label="Nombre"
                       type="text"
+                      value={busqueda.nombre}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -183,6 +210,7 @@ export default function Pacientes() {
                       id="outlined-number"
                       label="Apellido"
                       type="text"
+                      value={busqueda.apellido}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -194,7 +222,10 @@ export default function Pacientes() {
                 </GridContainer>
               </CardBody>
               <CardFooter>
-                <Button color='primary' onClick={buscarPaciente}>Buscar</Button>
+                <Button color='info' onClick={buscarPaciente}>Buscar</Button>
+                <Button variant="contained" onClick={limpiarCampos} color="info">
+                  Limpiar
+                </Button>
               </CardFooter>
             </Card>
           </form>
@@ -203,7 +234,7 @@ export default function Pacientes() {
         {pacientes.length > 0 ?
           (<GridItem xs={12} sm={12} md={12}>
             <Card>
-              <CardHeader color='primary'>
+              <CardHeader color='success'>
                 <h4 className={classes.cardTitleWhite}>Pacientes</h4>
                 <p className={classes.cardCategoryWhite}>
                   Lista
@@ -230,9 +261,10 @@ export default function Pacientes() {
                         <TableCell align="right">{paciente.apellido}</TableCell>
                         <TableCell align="right">
 
-                          <Button component={Link} to={`/admin/paciente/editar/${paciente._id}`} color="primary">
+                          <Button component={Link} to={`/admin/paciente/editar/${paciente._id}`} color="info">
                             Detalle
                           </Button>
+
 
                         </TableCell>
 

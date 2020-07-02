@@ -242,7 +242,7 @@ const EditarPaciente = (props) => {
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <form onSubmit={actualizarPaciente}>
-                            <CardHeader color="primary">
+                            <CardHeader color="success">
                                 <h4 className={classes.cardTitleWhite}>Editar Paciente</h4>
                                 <p className={classes.cardCategoryWhite}>Completar los campos</p>
                             </CardHeader>
@@ -639,10 +639,10 @@ const EditarPaciente = (props) => {
                                 </GridContainer>
                             </CardBody>
                             <CardFooter>
-                                <Button color="primary" onClick={() => setHabilitado(true)} type="button" >Editar</Button>
-                                <Button color="primary" disabled={!habilitado} type="submit" >Guardar</Button>
+                                <Button color="info" onClick={() => setHabilitado(true)} type="button" >Editar</Button>
+                                <Button color="info" disabled={!habilitado} type="submit" >Guardar</Button>
 
-                                <Button color="primary" onClick={() => setHabilitado(false)} type="button" >Cancelar</Button>
+                                <Button color="info" onClick={() => setHabilitado(false)} type="button" >Cancelar</Button>
 
                             </CardFooter>
                         </form>

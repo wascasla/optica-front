@@ -213,7 +213,7 @@ const NuevoPaciente = () => {
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <form onSubmit={agregarPaciente}>
-                            <CardHeader color="primary">
+                            <CardHeader color="success">
                                 <h4 className={classes.cardTitleWhite}>Agregar Nuevo Paciente</h4>
                                 <p className={classes.cardCategoryWhite}>Completar los campos</p>
                             </CardHeader>
@@ -592,8 +592,8 @@ const NuevoPaciente = () => {
                                 </GridContainer>
                             </CardBody>
                             <CardFooter>
-                                {<Button color="primary" type="submit" >Guardar</Button>}
-                                <Button color="primary" onClick={() => limpiarStatePaciente()} type="button" >Cancelar</Button>
+                                {<Button color="info" type="submit" >Guardar</Button>}
+                                <Button color="info" onClick={() => limpiarStatePaciente()} type="button" >Cancelar</Button>
 
                             </CardFooter>
                         </form>

@@ -151,7 +151,7 @@ const dashboardRoutes = [
   },
   {
     path: "/paciente/editar/:idPersona",
-    name: "Editar Paciente",
+    name: "Editar",
     rtlName: "لوحة القيادة",
     icon: Dashboard,
     component: EditarPaciente,
