@@ -93,9 +93,6 @@ const EditarPaciente = (props) => {
             const resultado = await clienteAxios.get('/localidades');
             console.log(resultado.data);
             setlocalidades(resultado.data)
-            console.log("object")
-
-
 
         }
 
@@ -110,7 +107,7 @@ const EditarPaciente = (props) => {
                 setValue(pacienteConsulta.data.persona.localidad.nombre + " - " + pacienteConsulta.data.persona.localidad.provincia.nombre)
             }
             getEdad(pacienteConsulta.data.persona.fechaNacimiento)
-            console.log(pacienteConsulta.data.persona.fechaNacimiento)
+            //console.log(pacienteConsulta.data.persona.fechaNacimiento)
 
         };
 
