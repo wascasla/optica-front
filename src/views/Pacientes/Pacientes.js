@@ -100,8 +100,15 @@ export default function Pacientes() {
           });
         }
       } catch (error) {
-        console.log('error');
+        console.log('error en la conexion del servidor (1)');
+        Swal.fire({
+          icon: 'error',
+          title: 'Hubo error en el servidor',
+          text: " Error interno del servidor(conexion)  (1)",
+        });
       }
+      setcargando(false);
+      return null;
 
 
 
@@ -109,6 +116,7 @@ export default function Pacientes() {
 
     } else {
       if (busqueda.nombre || busqueda.apellido) {
+        setcargando(true);
         const resultadoBusqueda = await clienteAxios.post(`/personas/busqueda/nombre`, busqueda)
           .then(
             (response) => {
@@ -131,7 +139,7 @@ export default function Pacientes() {
               Swal.fire({
                 icon: 'error',
                 title: 'Hubo error en el servidor',
-                text: " Error interno del servidor(conexion)  ",
+                text: " Error interno del servidor(conexion)  (2)",
               });
               console.log(error)
             }

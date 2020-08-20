@@ -20,6 +20,7 @@ import avatar from "assets/img/faces/marc.jpg";
 import clienteAxios from '../../config/axios';
 import Swal from 'sweetalert2';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Loading from 'components/Loading/Loading';
 
 const styles = {
     cardCategoryWhite: {
@@ -45,6 +46,8 @@ const useStyles = makeStyles(styles);
 
 
 const NuevoPaciente = () => {
+
+    const [cargando, setcargando] = useState(false);
 
     const [paciente, setPaciente] = useState({
         dni: "",
@@ -104,6 +107,7 @@ const NuevoPaciente = () => {
         e.preventDefault();
         //Destructuring
         const { dni, nombre, apellido, localidad } = paciente;
+        setcargando(true);
 
 
 
@@ -153,7 +157,7 @@ const NuevoPaciente = () => {
                 // lanzar la alerta
                 Swal.fire({
                     icon: 'error',
-                    title: 'Hubo un error',
+                    title: 'Hubo un error en el Servidor',
                     text: error.message,
                 });
             }
@@ -165,6 +169,8 @@ const NuevoPaciente = () => {
                 text: 'Falta completar algunos datos',
             });
         }
+
+        setcargando(false);
     };
 
     const guadarLocalidad = (value) => {
@@ -209,6 +215,11 @@ const NuevoPaciente = () => {
 
     return (
         <div>
+
+            {
+                cargando ? <Loading /> : null
+            }
+
             <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>

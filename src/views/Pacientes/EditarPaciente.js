@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 //import clienteAxios from '../../config/axios';
 import clienteAxios from 'config/axios'
 import { Link } from 'react-router-dom';
+import Loading from 'components/Loading/Loading';
 
 const styles = {
     cardCategoryWhite: {
@@ -41,6 +42,8 @@ const useStyles = makeStyles(styles);
 
 
 const EditarPaciente = (props) => {
+
+    const [cargando, setcargando] = useState(false);
 
     const classes = useStyles();
 
@@ -120,7 +123,7 @@ const EditarPaciente = (props) => {
         e.preventDefault();
         //Destructuring
         const { dni, nombre, apellido } = persona;
-        //console.log(paciente)
+        setcargando(true);
 
 
         //revisar que las propiedades del state tengan contenido
@@ -169,7 +172,7 @@ const EditarPaciente = (props) => {
                     // lanzar la alerta
                     Swal.fire({
                         icon: 'error',
-                        title: 'Hubo un error',
+                        title: 'Hubo un error en el servidor(1)',
                         text: res.data.message,
                     });
                 }
@@ -178,7 +181,7 @@ const EditarPaciente = (props) => {
                 // lanzar la alerta
                 Swal.fire({
                     icon: 'error',
-                    title: 'Hubo un error',
+                    title: 'Hubo un error interno del servidor(2)',
                     text: error.message,
                 });
             }
@@ -190,6 +193,8 @@ const EditarPaciente = (props) => {
                 text: 'Falta completar algunos datos',
             });
         }
+
+        setcargando(false);
     }
 
     const leerDatosBusquedaPersona = (e) => {
@@ -235,6 +240,11 @@ const EditarPaciente = (props) => {
 
     return (
         <div>
+
+            {
+                cargando ? <Loading /> : null
+            }
+
             <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
