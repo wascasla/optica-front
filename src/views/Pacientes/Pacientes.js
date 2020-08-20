@@ -53,11 +53,14 @@ import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js'
 import clienteAxios from '../../config/axios';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import Loading from 'components/Loading/Loading';
 
 const useStyles = makeStyles(styles);
 
 export default function Pacientes() {
   const classes = useStyles();
+
+  const [cargando, setcargando] = useState(false);
 
   const [pacientes, setPacientes] = useState([])
 
@@ -75,40 +78,65 @@ export default function Pacientes() {
   const buscarPaciente = async (e) => {
     e.preventDefault();
     setPacientes([]);
+    setcargando(true);
 
     //obtener los productos de la busqueda
     if (busqueda.dni) {
       var pacientensEncontrados = [];
-      const resultadoBusqueda = await clienteAxios.post(`/personas/busqueda/dni`, busqueda);
-      console.log(resultadoBusqueda.data);
-      if (!resultadoBusqueda.data.mensaje) {
-        pacientensEncontrados.push(resultadoBusqueda.data)
-        console.log(pacientensEncontrados);
-        setPacientes(pacientensEncontrados);
-      } else {
-        console.log("No existen pacientes con ese dni")
-        Swal.fire({
-          icon: 'error',
-          title: 'Hubo un error al buscar',
-          text: " No existen pacientes con ese dni  ",
-        });
-      }
 
-    } else {
-      if (busqueda.nombre || busqueda.apellido) {
-        const resultadoBusqueda = await clienteAxios.post(`/personas/busqueda/nombre`, busqueda);
+      try {
+        const resultadoBusqueda = await clienteAxios.post(`/personas/busqueda/dni`, busqueda);
         console.log(resultadoBusqueda.data);
-        //pacientensEncontrados.push(resultadoBusqueda.data)
         if (!resultadoBusqueda.data.mensaje) {
-          setPacientes(resultadoBusqueda.data);
+          pacientensEncontrados.push(resultadoBusqueda.data)
+          console.log(pacientensEncontrados);
+          setPacientes(pacientensEncontrados);
         } else {
-          console.log("No existen pacientes con ese nombre y/o apellido")
+          console.log("No existen pacientes con ese dni")
           Swal.fire({
             icon: 'error',
             title: 'Hubo un error al buscar',
-            text: " No existen pacientes con ese nombre y/o apellido  ",
+            text: " No existen pacientes con ese dni  ",
           });
         }
+      } catch (error) {
+        console.log('error');
+      }
+
+
+
+
+
+    } else {
+      if (busqueda.nombre || busqueda.apellido) {
+        const resultadoBusqueda = await clienteAxios.post(`/personas/busqueda/nombre`, busqueda)
+          .then(
+            (response) => {
+              //console.log(resultadoBusqueda.data);
+              //console.log(resultadoBusqueda);
+              //console.log(response.data);
+              //pacientensEncontrados.push(resultadoBusqueda.data)
+              if (!response.data.mensaje) {
+                setPacientes(response.data);
+              } else {
+                //console.log("No existen pacientes con ese nombre y/o apellido")
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Hubo un error al buscar',
+                  text: " No existen pacientes con ese nombre y/o apellido  ",
+                });
+              }
+            },
+            (error) => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Hubo error en el servidor',
+                text: " Error interno del servidor(conexion)  ",
+              });
+              console.log(error)
+            }
+          );
+
 
       } else {
         //console.log("debe agregar un parametro de busqueda");
@@ -118,6 +146,8 @@ export default function Pacientes() {
           text: " Debe ingresar algun parametro de busqueda  ",
         });
       }
+
+      setcargando(false);
 
     }
 
@@ -159,6 +189,11 @@ export default function Pacientes() {
 
   return (
     <div>
+
+      {
+        cargando ? <Loading /> : null
+      }
+
 
       <GridContainer>
         <GridItem xs={12} sm={12} md={10}>
