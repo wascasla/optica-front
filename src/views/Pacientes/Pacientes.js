@@ -122,7 +122,7 @@ export default function Pacientes() {
             (response) => {
               //console.log(resultadoBusqueda.data);
               //console.log(resultadoBusqueda);
-              //console.log(response.data);
+              console.log(response.data);
               //pacientensEncontrados.push(resultadoBusqueda.data)
               if (!response.data.mensaje) {
                 setPacientes(response.data);
@@ -291,6 +291,8 @@ export default function Pacientes() {
                       <TableCell align="right">Dni</TableCell>
                       <TableCell align="right">Nombre</TableCell>
                       <TableCell align="right">Apellido</TableCell>
+                      <TableCell align="right">Legajo N°</TableCell>
+                      <TableCell align="right">Fichero</TableCell>
                       <TableCell align="right">Acciones</TableCell>
                     </TableRow>
                   </TableHead>
@@ -302,6 +304,8 @@ export default function Pacientes() {
                         </TableCell>
                         <TableCell align="right">{paciente.nombre}</TableCell>
                         <TableCell align="right">{paciente.apellido}</TableCell>
+                        <TableCell align="right">{paciente.legajo}</TableCell>
+                        <TableCell align="right">{paciente.fichero}</TableCell>
                         <TableCell align="right">
 
                           <Button component={Link} to={`/admin/paciente/editar/${paciente._id}`} color="info">

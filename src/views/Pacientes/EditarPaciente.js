@@ -53,7 +53,7 @@ const EditarPaciente = (props) => {
     // paciente = state, y funcion para actualizar
     const [paciente, setPaciente] = useState({
 
-        fichero: "",
+
         fechaUltimaConsulta: "",
         medicoUltimaConsulta: "",
         observacion: "",
@@ -77,7 +77,9 @@ const EditarPaciente = (props) => {
         fechaNacimiento: "",
         telefono: "",
         localidad: null,
-        direccion: ""
+        direccion: "",
+        fichero: "",
+        legajo: ""
     });
 
     const [localidades, setlocalidades] = useState([])
@@ -451,8 +453,26 @@ const EditarPaciente = (props) => {
                                                 disabled: !habilitado,
                                                 name: "fichero",
                                                 type: "text",
-                                                onChange: (leerDatosBusquedaPaciente),
-                                                value: paciente.fichero
+                                                onChange: (leerDatosBusquedaPersona),
+                                                value: persona.fichero
+                                            }} />
+
+
+                                    </GridItem>
+                                    <GridItem xs={12} sm={12} md={6}>
+
+                                        <CustomInput
+                                            labelText="Fichero"
+                                            id="fichero"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                disabled: true,
+                                                name: "legajo",
+                                                type: "text",
+                                                onChange: (leerDatosBusquedaPersona),
+                                                value: persona.legajo
                                             }} />
 
 

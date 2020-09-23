@@ -69,7 +69,8 @@ const NuevoPaciente = () => {
         telefonoAcompanante: "",
         obraSocial: "",
         planObraSocial: "",
-        numeroAfiliado: ""
+        numeroAfiliado: "",
+        legajo: "",
     });
 
     const [localidades, setlocalidades] = useState([])
@@ -204,7 +205,8 @@ const NuevoPaciente = () => {
             telefonoAcompanante: "",
             obraSocial: "",
             planObraSocial: "",
-            numeroAfiliado: ""
+            numeroAfiliado: "",
+            legajo: "",
         });
     }
 
